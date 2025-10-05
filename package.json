@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "2025英雄联盟全球总决赛模拟器 - 基于Bradley-Terry模型",
   "private": true,
-  "homepage": "https://Worlds-2025.github.io/worlds-2025-simulator",
+  "homepage": "https://worlds-2025.github.io/worlds-2025-simulator",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
