@@ -1,0 +1,33 @@
+{
+  "name": "worlds-2025-simulator",
+  "version": "1.0.0",
+  "description": "2025英雄联盟全球总决赛模拟器 - 基于Bradley-Terry模型",
+  "private": true,
+  "homepage": "https://yourusername.github.io/worlds-2025-simulator",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "lucide-react": "^0.263.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^4.3.9",
+    "gh-pages": "^5.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "keywords": [
+    "League of Legends",
+    "Worlds 2025",
+    "Esports",
+    "Simulator",
+    "Bradley-Terry"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
