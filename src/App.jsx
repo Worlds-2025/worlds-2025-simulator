@@ -249,6 +249,106 @@ const Worlds2025Simulator = () => {
     return [...pool1VsPool3Matches, ...pool2Matches];
   };
 
+  // 瑞士轮第2-5轮配对（战绩相同队伍对决，避免重复对手）
+  const pairTeamsRound2To5 = (group) => {
+    const MAX_ATTEMPTS = 10000; // 增加最大尝试次数
+    let attempt = 0;
+    
+    // 检查配对中是否有重复对手
+    const hasRematch = (pairings, teams) => {
+      for (const pair of pairings) {
+        const t1 = teams.find(t => t.code === pair.team1);
+        const t2 = teams.find(t => t.code === pair.team2);
+        if (!t1 || !t2) continue;
+        if (t1.opponents.has(pair.team2) || t2.opponents.has(pair.team1)) {
+          return true;
+        }
+      }
+      return false;
+    };
+    
+    // 使用回溯算法找到合法配对
+    const backtrackPairing = (teams, index, currentPairings, used) => {
+      // 所有队伍都已配对
+      if (index >= teams.length) {
+        return currentPairings.slice();
+      }
+      
+      // 如果当前队伍已被配对，跳过
+      if (used.has(teams[index].code)) {
+        return backtrackPairing(teams, index + 1, currentPairings, used);
+      }
+      
+      const team1 = teams[index];
+      
+      // 尝试与后面未配对的每个队伍配对
+      for (let j = index + 1; j < teams.length; j++) {
+        const team2 = teams[j];
+        
+        // 如果team2已被配对，或者两队已对战过，跳过
+        if (used.has(team2.code) || team1.opponents.has(team2.code)) {
+          continue;
+        }
+        
+        // 尝试这个配对
+        used.add(team1.code);
+        used.add(team2.code);
+        currentPairings.push({ team1: team1.code, team2: team2.code });
+        
+        // 递归配对剩余队伍
+        const result = backtrackPairing(teams, index + 1, currentPairings, used);
+        if (result) {
+          return result;
+        }
+        
+        // 回溯
+        used.delete(team1.code);
+        used.delete(team2.code);
+        currentPairings.pop();
+      }
+      
+      return null;
+    };
+    
+    // 尝试使用回溯算法
+    let pairings = backtrackPairing(group, 0, [], new Set());
+    
+    // 如果回溯算法失败（理论上不应该，除非输入有问题），使用随机尝试作为后备
+    if (!pairings) {
+      console.warn('回溯算法未找到合法配对，使用随机尝试');
+      
+      const tryPairing = (teamList) => {
+        const shuffled = [...teamList].sort(() => Math.random() - 0.5);
+        const pairs = [];
+        for (let i = 0; i < shuffled.length; i += 2) {
+          if (i + 1 < shuffled.length) {
+            pairs.push({
+              team1: shuffled[i].code,
+              team2: shuffled[i + 1].code
+            });
+          }
+        }
+        return pairs;
+      };
+      
+      while (attempt < MAX_ATTEMPTS) {
+        pairings = tryPairing(group);
+        if (!hasRematch(pairings, group)) {
+          break;
+        }
+        attempt++;
+      }
+      
+      if (attempt >= MAX_ATTEMPTS) {
+        console.error('达到最大重试次数，仍存在重复对手的配对');
+        // 返回随机配对作为最后手段
+        return tryPairing(group);
+      }
+    }
+    
+    return pairings;
+  };
+
   const [simulated, setSimulated] = useState(false);
   const [results, setResults] = useState(null);
 
@@ -280,9 +380,9 @@ const Worlds2025Simulator = () => {
 
     // 瑞士轮参赛队伍
     const swissTeams = [
-      ...pool1Teams.map(code => ({ code, poolActual: 1, wins: 0, losses: 0, strength: strengths[code], matchHistory: [] })),
-      ...pool2Teams.map(code => ({ code, poolActual: 2, wins: 0, losses: 0, strength: strengths[code], matchHistory: [] })),
-      ...pool3Teams.map(code => ({ code, poolActual: 3, wins: 0, losses: 0, strength: strengths[code], matchHistory: [] }))
+      ...pool1Teams.map(code => ({ code, poolActual: 1, wins: 0, losses: 0, strength: strengths[code], matchHistory: [], opponents: new Set() })),
+      ...pool2Teams.map(code => ({ code, poolActual: 2, wins: 0, losses: 0, strength: strengths[code], matchHistory: [], opponents: new Set() })),
+      ...pool3Teams.map(code => ({ code, poolActual: 3, wins: 0, losses: 0, strength: strengths[code], matchHistory: [], opponents: new Set() }))
     ];
 
     const swissMatches = [];
@@ -324,6 +424,7 @@ const Worlds2025Simulator = () => {
         recordAfter: `${t1.wins}-${t1.losses}`
       };
       t1.matchHistory.push(matchRecord);
+      t1.opponents.add(pair.team2); // 记录对手
       
       const matchRecord2 = {
         round: 1,
@@ -334,6 +435,7 @@ const Worlds2025Simulator = () => {
         recordAfter: `${t2.wins}-${t2.losses}`
       };
       t2.matchHistory.push(matchRecord2);
+      t2.opponents.add(pair.team1); // 记录对手
       
       return { 
         ...match, 
@@ -361,83 +463,91 @@ const Worlds2025Simulator = () => {
         byRecord[record].push(t);
       });
       
+      // 对每个战绩组进行配对
       Object.values(byRecord).forEach(group => {
+        // 按强度排序
         group.sort((a, b) => b.strength - a.strength);
-        for (let i = 0; i < group.length; i += 2) {
-          if (i + 1 < group.length) {
-            const t1 = group[i];
-            const t2 = group[i + 1];
-            
-            const isDecisive = (t1.wins === 2 || t1.losses === 2) || (t2.wins === 2 || t2.losses === 2);
-            
-            // 保存比赛前的战绩
-            const team1RecordBefore = `${t1.wins}-${t1.losses}`;
-            const team2RecordBefore = `${t2.wins}-${t2.losses}`;
-            
-            let matchResult;
-            let matchType;
-            if (isDecisive) {
-              matchResult = simulateBO3(t1.code, t2.code, t1.strength, t2.strength);
-              matchType = 'BO3';
-              roundMatches.push({ 
-                ...matchResult, 
-                type: 'BO3', 
-                decisive: true,
-                team1RecordBefore,
-                team2RecordBefore
-              });
-            } else {
-              matchResult = simulateBO1(t1.code, t2.code, t1.strength, t2.strength);
-              matchType = 'BO1';
-              roundMatches.push({ 
-                ...matchResult, 
-                type: 'BO1', 
-                decisive: false,
-                team1RecordBefore,
-                team2RecordBefore
-              });
-            }
-            
-            if (matchResult.winner === t1.code) {
-              t1.wins++;
-              t2.losses++;
-            } else {
-              t2.wins++;
-              t1.losses++;
-            }
-            
-            // 记录比赛历史（包含比赛后的战绩）
-            const score1 = matchType === 'BO3' 
-              ? `${matchResult.score1}-${matchResult.score2}` 
-              : (matchResult.winner === t1.code ? '1-0' : '0-1');
-            const score2 = matchType === 'BO3' 
-              ? `${matchResult.score2}-${matchResult.score1}` 
-              : (matchResult.winner === t2.code ? '1-0' : '0-1');
-            
-            t1.matchHistory.push({
-              round: r,
-              opponent: t2.code,
-              result: matchResult.winner === t1.code ? 'W' : 'L',
-              score: score1,
-              type: matchType,
-              recordAfter: `${t1.wins}-${t1.losses}`
+        
+        // 使用新的配对函数，避免重复对手
+        const pairings = pairTeamsRound2To5(group);
+        
+        pairings.forEach(pair => {
+          const t1 = swissTeams.find(t => t.code === pair.team1);
+          const t2 = swissTeams.find(t => t.code === pair.team2);
+          
+          if (!t1 || !t2) return;
+          
+          const isDecisive = (t1.wins === 2 || t1.losses === 2) || (t2.wins === 2 || t2.losses === 2);
+          
+          // 保存比赛前的战绩
+          const team1RecordBefore = `${t1.wins}-${t1.losses}`;
+          const team2RecordBefore = `${t2.wins}-${t2.losses}`;
+          
+          let matchResult;
+          let matchType;
+          if (isDecisive) {
+            matchResult = simulateBO3(t1.code, t2.code, t1.strength, t2.strength);
+            matchType = 'BO3';
+            roundMatches.push({ 
+              ...matchResult, 
+              type: 'BO3', 
+              decisive: true,
+              team1RecordBefore,
+              team2RecordBefore
             });
-            
-            t2.matchHistory.push({
-              round: r,
-              opponent: t1.code,
-              result: matchResult.winner === t2.code ? 'W' : 'L',
-              score: score2,
-              type: matchType,
-              recordAfter: `${t2.wins}-${t2.losses}`
+          } else {
+            matchResult = simulateBO1(t1.code, t2.code, t1.strength, t2.strength);
+            matchType = 'BO1';
+            roundMatches.push({ 
+              ...matchResult, 
+              type: 'BO1', 
+              decisive: false,
+              team1RecordBefore,
+              team2RecordBefore
             });
-            
-            if (t1.wins === 3 && !qualified.find(q => q.code === t1.code)) qualified.push({...t1});
-            if (t2.wins === 3 && !qualified.find(q => q.code === t2.code)) qualified.push({...t2});
-            if (t1.losses === 3 && !eliminated.find(e => e.code === t1.code)) eliminated.push({...t1});
-            if (t2.losses === 3 && !eliminated.find(e => e.code === t2.code)) eliminated.push({...t2});
           }
-        }
+          
+          if (matchResult.winner === t1.code) {
+            t1.wins++;
+            t2.losses++;
+          } else {
+            t2.wins++;
+            t1.losses++;
+          }
+          
+          // 记录比赛历史（包含比赛后的战绩）
+          const score1 = matchType === 'BO3' 
+            ? `${matchResult.score1}-${matchResult.score2}` 
+            : (matchResult.winner === t1.code ? '1-0' : '0-1');
+          const score2 = matchType === 'BO3' 
+            ? `${matchResult.score2}-${matchResult.score1}` 
+            : (matchResult.winner === t2.code ? '1-0' : '0-1');
+          
+          t1.matchHistory.push({
+            round: r,
+            opponent: t2.code,
+            result: matchResult.winner === t1.code ? 'W' : 'L',
+            score: score1,
+            type: matchType,
+            recordAfter: `${t1.wins}-${t1.losses}`
+          });
+          t1.opponents.add(t2.code); // 记录对手
+          
+          t2.matchHistory.push({
+            round: r,
+            opponent: t1.code,
+            result: matchResult.winner === t2.code ? 'W' : 'L',
+            score: score2,
+            type: matchType,
+            recordAfter: `${t2.wins}-${t2.losses}`
+          });
+          t2.opponents.add(t1.code); // 记录对手
+          
+          if (t1.wins === 3 && !qualified.find(q => q.code === t1.code)) qualified.push({...t1});
+          if (t2.wins === 3 && !qualified.find(q => q.code === t2.code)) qualified.push({...t2});
+          if (t1.losses === 3 && !eliminated.find(e => e.code === t1.code)) eliminated.push({...t1});
+          if (t2.losses === 3 && !eliminated.find(e => e.code === t2.code)) eliminated.push({...t2});
+        });
       });
       
       swissMatches.push({ round: r, matches: roundMatches });
@@ -622,6 +732,9 @@ const Worlds2025Simulator = () => {
               <span className="text-red-600 font-semibold">首轮抽签规则：</span><br/>
               <span className="text-blue-600">• POOL1 vs POOL3，POOL2内部对战</span><br/>
               <span className="text-blue-600">• 同赛区避战，采用顺延策略：抽到同赛区则顺延到下一个队伍</span><br/>
+              <span className="text-red-600 font-semibold">2-5轮抽签规则：</span><br/>
+              <span className="text-blue-600">• 战绩相同的队伍彼此对决（1-0 vs 1-0, 0-1 vs 0-1 等）</span><br/>
+              <span className="text-blue-600">• 队伍不会遇到重复的对手</span><br/>
               <span className="text-orange-600 font-semibold">• 决定性对局（2胜或2败）采用BO3，其他对局BO1</span>
             </p>
             
@@ -1144,7 +1257,7 @@ const Worlds2025Simulator = () => {
               单败淘汰制 · BO5
             </p>
 
-            <div className="overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto">
               <div className="min-w-[700px] md:min-w-[1080px] flex items-center justify-center gap-2 md:gap-2">
                 {/* 左侧：上半区八强赛 */}
                 <div className="w-32 md:w-48 space-y-6 md:space-y-12">
@@ -1665,6 +1778,15 @@ const Worlds2025Simulator = () => {
                 ))}
               </div>
             </details>
+          </section>
+
+          {/* 致谢 */}
+          <section className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl shadow-lg p-4 sm:p-6 border-2 border-blue-200">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 text-center text-blue-800">💝 特别致谢</h2>
+            <p className="text-xs sm:text-sm text-gray-700 text-center leading-relaxed">
+              感谢贴吧用户 <span className="font-semibold text-blue-600">@三圈大满败冲击者</span> 和 <span className="font-semibold text-blue-600">@palu2077</span><br/>
+              对于抽签规则"队伍不会遇到重复的对手"这一点的指正。
+            </p>
           </section>
         </div>
       )}
