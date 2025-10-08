@@ -526,10 +526,11 @@ const Worlds2025Simulator = () => {
           }
           
           return (
-            <div key={idx} className="relative flex items-center justify-center bg-gray-50 p-2 rounded min-h-[2.5rem]">
-              {/* 左侧：绝对定位 */}
-              <div className="absolute left-2 text-xs text-gray-500 whitespace-nowrap">
-                第{idx + 1}局: <span className="hidden sm:inline">{teamsData[game.winner]?.name}</span><span className="sm:hidden">{game.winner}</span>胜
+            <div key={idx} className="relative flex items-center justify-center bg-gray-50 p-2 rounded min-h-[3rem]">
+              {/* 左侧：两行显示 */}
+              <div className="absolute left-2 top-2 text-xs text-gray-500 max-w-[28%] leading-tight">
+                <div>第{idx + 1}局:</div>
+                <div><span className="hidden sm:inline">{teamsData[game.winner]?.name}</span><span className="sm:hidden">{game.winner}</span>获胜</div>
               </div>
               
               {/* 中间：比分（真正居中） */}
@@ -541,11 +542,10 @@ const Worlds2025Simulator = () => {
                 <span className="text-gray-800 sm:hidden">{match.team2}</span>
               </div>
               
-              {/* 右侧：绝对定位 */}
-              <div className="absolute right-2 text-xs text-gray-500 text-right whitespace-nowrap">
-                <span className="hidden sm:inline">{teamsData[match.team1]?.name}</span>
-                <span className="sm:hidden">{match.team1}</span>
-                单场胜率: {(team1Prob * 100).toFixed(1)}%
+              {/* 右侧：两行显示 */}
+              <div className="absolute right-2 top-2 text-xs text-gray-500 text-right max-w-[28%] leading-tight">
+                <div><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
+                <div>单场胜率: {(team1Prob * 100).toFixed(1)}%</div>
               </div>
             </div>
           );
@@ -698,10 +698,11 @@ const Worlds2025Simulator = () => {
                                   }
                                   
                                   return (
-                                    <div key={gIdx} className="relative flex items-center justify-center bg-white p-1 rounded text-xs min-h-[2rem]">
-                                      {/* 左侧：绝对定位 */}
-                                      <div className="absolute left-1 text-gray-500 whitespace-nowrap">
-                                        第{gIdx + 1}局: <span className="hidden sm:inline">{teamsData[game.winner]?.name}</span><span className="sm:hidden">{game.winner}</span>胜
+                                    <div key={gIdx} className="relative flex items-center justify-center bg-white p-1 rounded text-xs min-h-[2.5rem]">
+                                      {/* 左侧：两行显示 */}
+                                      <div className="absolute left-1 top-1 text-gray-500 max-w-[28%] leading-tight">
+                                        <div>第{gIdx + 1}局:</div>
+                                        <div><span className="hidden sm:inline">{teamsData[game.winner]?.name}</span><span className="sm:hidden">{game.winner}</span>获胜</div>
                                       </div>
                                       
                                       {/* 中间：比分（真正居中） */}
@@ -713,11 +714,10 @@ const Worlds2025Simulator = () => {
                                         <span className="text-gray-800 sm:hidden">{match.team2}</span>
                                       </div>
                                       
-                                      {/* 右侧：绝对定位 */}
-                                      <div className="absolute right-1 text-gray-500 text-right whitespace-nowrap">
-                                        <span className="hidden sm:inline">{teamsData[match.team1]?.name}</span>
-                                        <span className="sm:hidden">{match.team1}</span>
-                                        单场胜率: {(team1Prob * 100).toFixed(1)}%
+                                      {/* 右侧：两行显示 */}
+                                      <div className="absolute right-1 top-1 text-gray-500 text-right max-w-[28%] leading-tight">
+                                        <div><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
+                                        <div>单场胜率: {(team1Prob * 100).toFixed(1)}%</div>
                                       </div>
                                     </div>
                                   );
