@@ -90,7 +90,7 @@ const Worlds2025Simulator = () => {
   const simulateBO1 = (team1, team2, s1, s2) => {
     const baseProb = calcBO1WinProb(s1, s2); // 基础胜率（无波动）
     
-    // 对双方strength各自施加±10%状态波动
+    // 对双方strength各自施加 ±10%状态波动
     const s1Fluctuated = applyStrengthFluctuation(s1);
     const s2Fluctuated = applyStrengthFluctuation(s2);
     const adjustedProb = calcBO1WinProb(s1Fluctuated, s2Fluctuated); // 波动后的胜率
@@ -111,7 +111,7 @@ const Worlds2025Simulator = () => {
     const games = [];
     
     while (score1 < 2 && score2 < 2) {
-      // 每局对双方strength各自施加±10%状态波动
+      // 每局对双方strength各自施加 ±10%状态波动
       const s1Fluctuated = applyStrengthFluctuation(s1);
       const s2Fluctuated = applyStrengthFluctuation(s2);
       const adjustedProb = calcBO1WinProb(s1Fluctuated, s2Fluctuated);
@@ -143,7 +143,7 @@ const Worlds2025Simulator = () => {
     const games = [];
     
     while (score1 < 3 && score2 < 3) {
-      // 每局对双方strength各自施加±10%状态波动
+      // 每局对双方strength各自施加 ±10%状态波动
       const s1Fluctuated = applyStrengthFluctuation(s1);
       const s2Fluctuated = applyStrengthFluctuation(s2);
       const adjustedProb = calcBO1WinProb(s1Fluctuated, s2Fluctuated);
@@ -534,14 +534,19 @@ const Worlds2025Simulator = () => {
               
               {/* 中间：突出显示比分 */}
               <div className="flex items-center gap-2 font-semibold text-base">
-                <span className="text-gray-800">{teamsData[match.team1]?.name}</span>
+                <span className="text-gray-800 hidden sm:inline">{teamsData[match.team1]?.name}</span>
+                <span className="text-gray-800 sm:hidden">{match.team1}</span>
                 <span className="text-blue-600">{currentScore1}-{currentScore2}</span>
-                <span className="text-gray-800">{teamsData[match.team2]?.name}</span>
+                <span className="text-gray-800 hidden sm:inline">{teamsData[match.team2]?.name}</span>
+                <span className="text-gray-800 sm:hidden">{match.team2}</span>
               </div>
               
               {/* 右侧：胜率 */}
-              <div className="text-xs text-gray-500 w-32 text-right">
+              <div className="text-xs text-gray-500 w-32 text-right hidden sm:block">
                 {teamsData[match.team1]?.name}胜率 {(team1Prob * 100).toFixed(1)}%
+              </div>
+              <div className="text-xs text-gray-500 w-20 text-right sm:hidden">
+                {(team1Prob * 100).toFixed(1)}%
               </div>
             </div>
           );
@@ -555,20 +560,20 @@ const Worlds2025Simulator = () => {
   );
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+    <div className="max-w-6xl mx-auto p-3 sm:p-6 bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
       <div className="text-center mb-8">
         <div className="flex items-center justify-center mb-4">
-          <Trophy className="w-12 h-12 text-yellow-500 mr-3" />
-          <h1 className="text-4xl font-bold text-gray-800">2025英雄联盟全球总决赛模拟器</h1>
+          <Trophy className="w-8 h-8 sm:w-12 sm:h-12 text-yellow-500 mr-3" />
+          <h1 className="text-2xl sm:text-4xl font-bold text-gray-800">2025英雄联盟全球总决赛模拟器</h1>
         </div>
-        <p className="text-sm text-gray-500 mb-4">
-          每局独立计算单局胜率，并施加±10%状态波动
+        <p className="text-xs sm:text-sm text-gray-500 mb-4">
+          每局独立计算单局胜率，并施加 ±10%状态波动
         </p>
         
         {!simulated && (
           <button
             onClick={runSimulation}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-colors flex items-center mx-auto gap-2 shadow-lg"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-base sm:text-lg transition-colors flex items-center mx-auto gap-2 shadow-lg"
           >
             <Swords className="w-5 h-5" />
             开始模拟比赛
@@ -580,7 +585,7 @@ const Worlds2025Simulator = () => {
             onClick={runSimulation}
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-lg"
           >
-            🔄 开始模拟
+            🔄 重新模拟
           </button>
         )}
       </div>
@@ -588,12 +593,12 @@ const Worlds2025Simulator = () => {
       {simulated && results && (
         <div className="space-y-8">
           {/* 入围赛 */}
-          <section className="bg-white rounded-xl shadow-lg p-6 border-2 border-purple-200">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-purple-600" />
+          <section className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-2 border-purple-200">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
               入围赛（10月14日）
             </h2>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-xs sm:text-sm text-gray-600 mb-4">
               BO5 单场淘汰 - 北京智慧电竞赛事中心
             </p>
             <BO5Display match={results.playIn} />
@@ -602,7 +607,7 @@ const Worlds2025Simulator = () => {
                 ✅ 晋级瑞士轮: <TeamDisplay code={results.playInWinner} />
               </span>
               <br/>
-              <span className="text-sm text-gray-600 mt-1 inline-block">
+              <span className="text-xs sm:text-sm text-gray-600 mt-1 inline-block">
                 {results.playInWinner === 'iG' 
                   ? '→ iG进POOL3，TES进POOL2，KT进POOL3 (LPL为入围赛胜出赛区)'
                   : '→ T1进POOL3，KT进POOL2，TES进POOL3 (LCK为入围赛胜出赛区)'}
@@ -611,20 +616,19 @@ const Worlds2025Simulator = () => {
           </section>
 
           {/* 瑞士轮 */}
-          <section className="bg-white rounded-xl shadow-lg p-6 border-2 border-blue-200">
-            <h2 className="text-2xl font-bold mb-4">瑞士轮（10月15-25日）</h2>
-            <p className="text-sm text-gray-600 mb-4">
+          <section className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-2 border-blue-200">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4">瑞士轮（10月15-25日）</h2>
+            <p className="text-xs sm:text-sm text-gray-600 mb-4">
               16支队伍，三胜晋级八强，三败淘汰 - 北京智慧电竞赛事中心<br/>
               <span className="text-red-600 font-semibold">首轮抽签规则：</span><br/>
               <span className="text-blue-600">• POOL1 vs POOL3，POOL2内部对战</span><br/>
               <span className="text-blue-600">• 同赛区避战，采用顺延策略：抽到同赛区则顺延到下一个队伍</span><br/>
-              <span className="text-orange-600 font-semibold">• 决定性对局（2胜或2负）采用BO3，其他对局BO1</span><br/>
-              <span className="text-purple-600 font-semibold mt-2 inline-block">💡 提示：BO3比赛的小场详情默认折叠，点击"📋 展开小场详情"可查看每局胜率和比分变化</span>
+              <span className="text-orange-600 font-semibold">• 决定性对局（2胜或2败）采用BO3，其他对局BO1</span>
             </p>
             
             {results.swissMatches.map((round, idx) => (
               <div key={idx} className="mb-6">
-                <h3 className="text-lg font-semibold mb-3 text-blue-700 bg-blue-50 p-2 rounded">
+                <h3 className="text-base sm:text-lg font-semibold mb-3 text-blue-700 bg-blue-50 p-2 rounded">
                   第{round.round}轮 {round.round === 1 && '(特殊抽签规则)'}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -680,7 +684,7 @@ const Worlds2025Simulator = () => {
                               
                               {/* 显示基础单局胜率 */}
                               <div className="text-xs text-gray-600 mt-2 mb-2 bg-blue-50 p-1 rounded">
-                                基础单局: {teamsData[match.team1]?.name} {(match.baseProb * 100).toFixed(1)}%
+                                基础单局: <span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span> {(match.baseProb * 100).toFixed(1)}%
                               </div>
                               
                               {/* 显示每局详情 */}
@@ -695,22 +699,27 @@ const Worlds2025Simulator = () => {
                                   }
                                   
                                   return (
-                                    <div key={gIdx} className="flex justify-between items-center bg-white p-1 rounded">
+                                    <div key={gIdx} className="flex justify-between items-center bg-white p-1 rounded text-xs">
                                       {/* 左侧：小字获胜信息 */}
-                                      <div className="text-xs text-gray-500" style={{width: '110px'}}>
-                                        第{gIdx + 1}局: {teamsData[game.winner]?.name}获胜
+                                      <div className="text-gray-500" style={{minWidth: '80px'}}>
+                                        第{gIdx + 1}局: <span className="hidden sm:inline">{teamsData[game.winner]?.name}</span><span className="sm:hidden">{game.winner}</span>胜
                                       </div>
                                       
                                       {/* 中间：突出显示比分 */}
-                                      <div className="flex items-center gap-1 font-semibold text-sm">
-                                        <span className="text-gray-800">{teamsData[match.team1]?.name}</span>
+                                      <div className="flex items-center gap-1 font-semibold">
+                                        <span className="text-gray-800 hidden sm:inline">{teamsData[match.team1]?.name}</span>
+                                        <span className="text-gray-800 sm:hidden">{match.team1}</span>
                                         <span className="text-blue-600">{currentScore1}-{currentScore2}</span>
-                                        <span className="text-gray-800">{teamsData[match.team2]?.name}</span>
+                                        <span className="text-gray-800 hidden sm:inline">{teamsData[match.team2]?.name}</span>
+                                        <span className="text-gray-800 sm:hidden">{match.team2}</span>
                                       </div>
                                       
                                       {/* 右侧：胜率 */}
-                                      <div className="text-xs text-gray-500 text-right" style={{width: '100px'}}>
-                                        {teamsData[match.team1]?.name}胜率 {(team1Prob * 100).toFixed(1)}%
+                                      <div className="text-gray-500 text-right hidden sm:block" style={{minWidth: '80px'}}>
+                                        <span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span> {(team1Prob * 100).toFixed(1)}%
+                                      </div>
+                                      <div className="text-gray-500 text-right sm:hidden" style={{minWidth: '50px'}}>
+                                        {(team1Prob * 100).toFixed(1)}%
                                       </div>
                                     </div>
                                   );
@@ -732,7 +741,7 @@ const Worlds2025Simulator = () => {
                             
                             {/* 单局胜率放在最下面 */}
                             <div className="text-xs text-gray-500">
-                              {teamsData[match.team1]?.name}胜率: {(parseFloat(match.adjustedProb) * 100).toFixed(1)}%
+                              <span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span>胜率: {(parseFloat(match.adjustedProb) * 100).toFixed(1)}%
                             </div>
                           </div>
                         )}
@@ -744,7 +753,7 @@ const Worlds2025Simulator = () => {
             ))}
 
             <div className="mt-6 bg-green-50 p-4 rounded-lg border-2 border-green-300">
-              <h3 className="font-bold text-lg mb-3 text-green-800">✅ 晋级八强队伍（3胜）：</h3>
+              <h3 className="font-bold text-base sm:text-lg mb-3 text-green-800">✅ 晋级八强队伍（3胜）：</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {results.qualified.map((team, idx) => (
                   <div key={idx} className="bg-white p-3 rounded shadow text-center border border-green-300">
@@ -763,7 +772,8 @@ const Worlds2025Simulator = () => {
                               第{match.round}轮 ({match.recordAfter})
                             </div>
                             <div className={`font-semibold ${match.result === 'W' ? 'text-green-600' : 'text-red-600'}`}>
-                              {teamsData[team.code]?.name} {match.score} {teamsData[match.opponent]?.name}
+                              <span className="hidden sm:inline">{teamsData[team.code]?.name} {match.score} {teamsData[match.opponent]?.name}</span>
+                              <span className="sm:hidden">{team.code} {match.score} {match.opponent}</span>
                             </div>
                           </div>
                         ))}
@@ -775,7 +785,7 @@ const Worlds2025Simulator = () => {
             </div>
 
             <div className="mt-4 bg-red-50 p-4 rounded-lg border-2 border-red-300">
-              <h3 className="font-bold text-lg mb-3 text-red-800">❌ 淘汰队伍（3败）：</h3>
+              <h3 className="font-bold text-base sm:text-lg mb-3 text-red-800">❌ 淘汰队伍（3败）：</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {results.eliminated.map((team, idx) => (
                   <div key={idx} className="bg-white p-2 rounded shadow text-center border border-red-200">
@@ -794,7 +804,8 @@ const Worlds2025Simulator = () => {
                               第{match.round}轮 ({match.recordAfter})
                             </div>
                             <div className={`font-semibold ${match.result === 'W' ? 'text-green-600' : 'text-red-600'}`}>
-                              {teamsData[team.code]?.name} {match.score} {teamsData[match.opponent]?.name}
+                              <span className="hidden sm:inline">{teamsData[team.code]?.name} {match.score} {teamsData[match.opponent]?.name}</span>
+                              <span className="sm:hidden">{team.code} {match.score} {match.opponent}</span>
                             </div>
                           </div>
                         ))}
@@ -805,26 +816,26 @@ const Worlds2025Simulator = () => {
               </div>
             </div>
 
-            {/* 瑞士轮赛程流程图 */}
+            {/* 瑞士轮赛程流程图 - 恢复final版本的完整颜色 */}
             <div className="mt-6 bg-gradient-to-br from-blue-50 to-purple-50 p-3 md:p-6 rounded-lg border-2 border-blue-300">
-              <h3 className="font-bold text-lg md:text-xl mb-2 md:mb-4 text-blue-900 text-center">瑞士轮赛果</h3>
+              <h3 className="font-bold text-base md:text-xl mb-2 md:mb-4 text-blue-900 text-center">瑞士轮赛果</h3>
               
               <div className="bg-white p-2 md:p-8 rounded-lg overflow-x-auto">
-                <div className="min-w-[700px] md:min-w-[1800px] relative">
-                  {/* 第一轮：所有队伍 0-0 */}
-                  <div className="flex flex-col items-center mb-16">
-                    <div className="px-8 py-4 rounded-lg border-2 border-gray-400">
-                      <div className="font-bold text-base mb-3 text-center text-gray-800">第一轮 0-0</div>
-                      <div className="grid grid-cols-2 gap-3">
+                <div className="min-w-[700px] md:min-w-[1080px] relative">
+                  {/* 第一轮：所有队伍 0-0 - 恢复蓝色背景 */}
+                  <div className="flex flex-col items-center mb-12 md:mb-16">
+                    <div className="bg-blue-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-lg border-2 border-blue-700">
+                      <div className="font-bold text-sm md:text-lg mb-2 md:mb-3 text-center">第一轮 0-0</div>
+                      <div className="grid grid-cols-2 gap-2 md:gap-3">
                         {results.swissMatches[0]?.matches.map((match, idx) => {
                           const score1 = match.winner === match.team1 ? 1 : 0;
                           const score2 = match.winner === match.team2 ? 1 : 0;
                           return (
-                            <div key={idx} className="bg-gray-50 px-6 py-2 rounded border border-gray-300 w-52">
-                              <div className="grid grid-cols-3 items-center gap-2">
-                                <div className="text-xs text-right text-gray-800">{teamsData[match.team1]?.name}</div>
+                            <div key={idx} className="bg-white/20 px-4 md:px-6 py-2 rounded border border-white/30 w-40 md:w-52">
+                              <div className="grid grid-cols-3 items-center gap-1 md:gap-2">
+                                <div className="text-xs text-right"><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
                                 <div className="text-sm font-bold text-center">{score1}-{score2}</div>
-                                <div className="text-xs text-left text-gray-800">{teamsData[match.team2]?.name}</div>
+                                <div className="text-xs text-left"><span className="hidden sm:inline">{teamsData[match.team2]?.name}</span><span className="sm:hidden">{match.team2}</span></div>
                               </div>
                             </div>
                           );
@@ -833,25 +844,25 @@ const Worlds2025Simulator = () => {
                     </div>
                   </div>
                   
-                  {/* 第二轮分支 */}
-                  <div className="flex justify-center gap-12 mb-16">
+                  {/* 第二轮分支 - 恢复颜色 */}
+                  <div className="flex justify-center gap-8 md:gap-20 mb-12 md:mb-16">
                     {/* 0-1战绩 */}
                     <div className="flex flex-col items-center">
-                      <div className="bg-white px-8 py-5 rounded-lg border-2 border-gray-500 w-60">
-                        <div className="font-bold text-base mb-2 text-center text-gray-800">第二轮 0-1</div>
-                        <div className="text-xs text-center text-gray-600 mb-3">BO1</div>
-                        <div className="space-y-3 flex flex-col items-center">
+                      <div className="bg-white px-4 md:px-8 py-3 md:py-5 rounded-lg border-2 border-gray-500 w-48 md:w-80">
+                        <div className="font-bold text-sm md:text-base mb-1 md:mb-2 text-center text-gray-800">第二轮 0-1</div>
+                        <div className="text-xs text-center text-gray-600 mb-2 md:mb-3">BO1</div>
+                        <div className="space-y-2 md:space-y-3 flex flex-col items-center">
                           {results.swissMatches[1]?.matches
                             .filter(m => m.team1RecordBefore === '0-1')
                             .map((match, idx) => {
                               const score1 = match.winner === match.team1 ? 1 : 0;
                               const score2 = match.winner === match.team2 ? 1 : 0;
                               return (
-                                <div key={idx} className="bg-gray-100 px-6 py-2 rounded border border-gray-300 w-54">
-                                  <div className="grid grid-cols-3 items-center gap-2">
-                                    <div className="text-xs text-right text-gray-800">{teamsData[match.team1]?.name}</div>
+                                <div key={idx} className="bg-gray-100 px-4 md:px-6 py-2 rounded border border-gray-300 w-44 md:w-72">
+                                  <div className="grid grid-cols-3 items-center gap-1 md:gap-2">
+                                    <div className="text-xs text-right text-gray-800"><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
                                     <div className="text-sm font-bold text-center">{score1}-{score2}</div>
-                                    <div className="text-xs text-left text-gray-800">{teamsData[match.team2]?.name}</div>
+                                    <div className="text-xs text-left text-gray-800"><span className="hidden sm:inline">{teamsData[match.team2]?.name}</span><span className="sm:hidden">{match.team2}</span></div>
                                   </div>
                                 </div>
                               );
@@ -862,21 +873,21 @@ const Worlds2025Simulator = () => {
                     
                     {/* 1-0战绩 */}
                     <div className="flex flex-col items-center">
-                      <div className="bg-white px-8 py-5 rounded-lg border-2 border-blue-500 w-60">
-                        <div className="font-bold text-base mb-2 text-center text-gray-800">第二轮 1-0</div>
-                        <div className="text-xs text-center text-blue-600 mb-3">BO1</div>
-                        <div className="space-y-3 flex flex-col items-center">
+                      <div className="bg-white px-4 md:px-8 py-3 md:py-5 rounded-lg border-2 border-blue-500 w-48 md:w-80">
+                        <div className="font-bold text-sm md:text-base mb-1 md:mb-2 text-center text-gray-800">第二轮 1-0</div>
+                        <div className="text-xs text-center text-blue-600 mb-2 md:mb-3">BO1</div>
+                        <div className="space-y-2 md:space-y-3 flex flex-col items-center">
                           {results.swissMatches[1]?.matches
                             .filter(m => m.team1RecordBefore === '1-0')
                             .map((match, idx) => {
                               const score1 = match.winner === match.team1 ? 1 : 0;
                               const score2 = match.winner === match.team2 ? 1 : 0;
                               return (
-                                <div key={idx} className="bg-blue-50 px-6 py-2 rounded border border-blue-300 w-54">
-                                  <div className="grid grid-cols-3 items-center gap-2">
-                                    <div className="text-xs text-right">{teamsData[match.team1]?.name}</div>
+                                <div key={idx} className="bg-blue-50 px-4 md:px-6 py-2 rounded border border-blue-300 w-44 md:w-72">
+                                  <div className="grid grid-cols-3 items-center gap-1 md:gap-2">
+                                    <div className="text-xs text-right"><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
                                     <div className="text-sm font-bold text-center">{score1}-{score2}</div>
-                                    <div className="text-xs text-left">{teamsData[match.team2]?.name}</div>
+                                    <div className="text-xs text-left"><span className="hidden sm:inline">{teamsData[match.team2]?.name}</span><span className="sm:hidden">{match.team2}</span></div>
                                   </div>
                                 </div>
                               );
@@ -886,22 +897,22 @@ const Worlds2025Simulator = () => {
                     </div>
                   </div>
                   
-                  {/* 第三轮分支 */}
-                  <div className="flex justify-center gap-6 mb-16">
+                  {/* 第三轮分支 - 恢复完整颜色 */}
+                  <div className="flex justify-center gap-4 md:gap-12 mb-12 md:mb-16">
                     {/* 0-2战绩 - BO3决定性对局 */}
                     <div className="flex flex-col items-center">
-                      <div className="bg-red-50 px-6 py-4 rounded-lg border-2 border-red-500 w-60">
-                        <div className="font-bold text-sm mb-2 text-center text-gray-800">第三轮 0-2</div>
-                        <div className="text-xs text-center text-red-600 mb-3">BO3</div>
-                        <div className="space-y-3 flex flex-col items-center">
+                      <div className="bg-red-50 px-3 md:px-6 py-3 md:py-4 rounded-lg border-2 border-red-500 w-48 md:w-80">
+                        <div className="font-bold text-xs md:text-sm mb-1 md:mb-2 text-center text-gray-800">第三轮 0-2</div>
+                        <div className="text-xs text-center text-red-600 mb-2 md:mb-3">BO3</div>
+                        <div className="space-y-2 md:space-y-3 flex flex-col items-center">
                           {results.swissMatches[2]?.matches
                             .filter(m => m.team1RecordBefore === '0-2')
                             .map((match, idx) => (
-                              <div key={idx} className="bg-white px-6 py-2 rounded border border-red-300 w-54">
-                                <div className="grid grid-cols-3 items-center gap-2">
-                                  <div className="text-xs text-right">{teamsData[match.team1]?.name}</div>
+                              <div key={idx} className="bg-white px-4 md:px-6 py-2 rounded border border-red-300 w-44 md:w-72">
+                                <div className="grid grid-cols-3 items-center gap-1 md:gap-2">
+                                  <div className="text-xs text-right"><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
                                   <div className="text-sm font-bold text-center text-red-600">{match.score1}-{match.score2}</div>
-                                  <div className="text-xs text-left">{teamsData[match.team2]?.name}</div>
+                                  <div className="text-xs text-left"><span className="hidden sm:inline">{teamsData[match.team2]?.name}</span><span className="sm:hidden">{match.team2}</span></div>
                                 </div>
                               </div>
                             ))}
@@ -909,16 +920,21 @@ const Worlds2025Simulator = () => {
                       </div>
                       {/* 淘汰队伍 - 合并为一个BOX */}
                       {results.swissMatches[2]?.matches.filter(m => m.team1RecordBefore === '0-2').length > 0 && (
-                        <div className="mt-3 bg-red-500 text-white px-4 py-3 rounded-lg border-2 border-red-600 w-54">
-                          <div className="text-xs font-bold text-center mb-2">淘汰队伍</div>
+                        <div className="mt-2 md:mt-3 bg-red-500 text-white px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-red-600 w-44 md:w-72">
+                          <div className="text-xs font-bold text-center mb-1 md:mb-2">淘汰队伍</div>
                           <div className="text-xs text-center">
                             {results.swissMatches[2]?.matches
                               .filter(m => m.team1RecordBefore === '0-2')
                               .map((match, idx) => {
                                 const loser = match.winner === match.team1 ? match.team2 : match.team1;
-                                return teamsData[loser]?.name;
+                                return (
+                                  <React.Fragment key={idx}>
+                                    <span className="hidden sm:inline">{teamsData[loser]?.name}</span>
+                                    <span className="sm:hidden">{loser}</span>
+                                  </React.Fragment>
+                                );
                               })
-                              .join(' · ')}
+                              .reduce((prev, curr, idx) => idx === 0 ? [curr] : [...prev, ' · ', curr], [])}
                           </div>
                         </div>
                       )}
@@ -926,21 +942,21 @@ const Worlds2025Simulator = () => {
                     
                     {/* 1-1战绩 */}
                     <div className="flex flex-col items-center">
-                      <div className="bg-white px-6 py-4 rounded-lg border-2 border-gray-500 w-60">
-                        <div className="font-bold text-sm mb-2 text-center text-gray-800">第三轮 1-1</div>
-                        <div className="text-xs text-center text-gray-600 mb-3">BO1</div>
-                        <div className="space-y-3 flex flex-col items-center">
+                      <div className="bg-white px-3 md:px-6 py-3 md:py-4 rounded-lg border-2 border-gray-500 w-48 md:w-80">
+                        <div className="font-bold text-xs md:text-sm mb-1 md:mb-2 text-center text-gray-800">第三轮 1-1</div>
+                        <div className="text-xs text-center text-gray-600 mb-2 md:mb-3">BO1</div>
+                        <div className="space-y-2 md:space-y-3 flex flex-col items-center">
                           {results.swissMatches[2]?.matches
                             .filter(m => m.team1RecordBefore === '1-1')
                             .map((match, idx) => {
                               const score1 = match.winner === match.team1 ? 1 : 0;
                               const score2 = match.winner === match.team2 ? 1 : 0;
                               return (
-                                <div key={idx} className="bg-gray-100 px-6 py-2 rounded border border-gray-300 w-54">
-                                  <div className="grid grid-cols-3 items-center gap-2">
-                                    <div className="text-xs text-right">{teamsData[match.team1]?.name}</div>
+                                <div key={idx} className="bg-gray-100 px-4 md:px-6 py-2 rounded border border-gray-300 w-44 md:w-72">
+                                  <div className="grid grid-cols-3 items-center gap-1 md:gap-2">
+                                    <div className="text-xs text-right"><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
                                     <div className="text-sm font-bold text-center">{score1}-{score2}</div>
-                                    <div className="text-xs text-left">{teamsData[match.team2]?.name}</div>
+                                    <div className="text-xs text-left"><span className="hidden sm:inline">{teamsData[match.team2]?.name}</span><span className="sm:hidden">{match.team2}</span></div>
                                   </div>
                                 </div>
                               );
@@ -951,18 +967,18 @@ const Worlds2025Simulator = () => {
                     
                     {/* 2-0战绩 - BO3决定性对局 */}
                     <div className="flex flex-col items-center">
-                      <div className="bg-blue-100 px-6 py-4 rounded-lg border-2 border-blue-600 w-60">
-                        <div className="font-bold text-sm mb-2 text-center text-gray-800">第三轮 2-0</div>
-                        <div className="text-xs text-center text-blue-600 mb-3">BO3</div>
-                        <div className="space-y-3 flex flex-col items-center">
+                      <div className="bg-blue-100 px-3 md:px-6 py-3 md:py-4 rounded-lg border-2 border-blue-600 w-48 md:w-80">
+                        <div className="font-bold text-xs md:text-sm mb-1 md:mb-2 text-center text-gray-800">第三轮 2-0</div>
+                        <div className="text-xs text-center text-blue-600 mb-2 md:mb-3">BO3</div>
+                        <div className="space-y-2 md:space-y-3 flex flex-col items-center">
                           {results.swissMatches[2]?.matches
                             .filter(m => m.team1RecordBefore === '2-0')
                             .map((match, idx) => (
-                              <div key={idx} className="bg-white px-6 py-2 rounded border border-blue-400 w-54">
-                                <div className="grid grid-cols-3 items-center gap-2">
-                                  <div className="text-xs text-right">{teamsData[match.team1]?.name}</div>
+                              <div key={idx} className="bg-white px-4 md:px-6 py-2 rounded border border-blue-400 w-44 md:w-72">
+                                <div className="grid grid-cols-3 items-center gap-1 md:gap-2">
+                                  <div className="text-xs text-right"><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
                                   <div className="text-sm font-bold text-center text-blue-600">{match.score1}-{match.score2}</div>
-                                  <div className="text-xs text-left">{teamsData[match.team2]?.name}</div>
+                                  <div className="text-xs text-left"><span className="hidden sm:inline">{teamsData[match.team2]?.name}</span><span className="sm:hidden">{match.team2}</span></div>
                                 </div>
                               </div>
                             ))}
@@ -970,35 +986,40 @@ const Worlds2025Simulator = () => {
                       </div>
                       {/* 晋级队伍 - 合并为一个BOX */}
                       {results.swissMatches[2]?.matches.filter(m => m.team1RecordBefore === '2-0').length > 0 && (
-                        <div className="mt-3 bg-green-600 text-white px-4 py-3 rounded-lg border-2 border-green-700 w-54">
-                          <div className="text-xs font-bold text-center mb-2">晋级队伍</div>
+                        <div className="mt-2 md:mt-3 bg-green-600 text-white px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-green-700 w-44 md:w-72">
+                          <div className="text-xs font-bold text-center mb-1 md:mb-2">晋级队伍</div>
                           <div className="text-xs text-center">
                             {results.swissMatches[2]?.matches
                               .filter(m => m.team1RecordBefore === '2-0')
-                              .map((match) => teamsData[match.winner]?.name)
-                              .join(' · ')}
+                              .map((match, idx) => (
+                                <React.Fragment key={idx}>
+                                  <span className="hidden sm:inline">{teamsData[match.winner]?.name}</span>
+                                  <span className="sm:hidden">{match.winner}</span>
+                                </React.Fragment>
+                              ))
+                              .reduce((prev, curr, idx) => idx === 0 ? [curr] : [...prev, ' · ', curr], [])}
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
                   
-                  {/* 第四轮分支 */}
-                  <div className="flex justify-center gap-12 mb-16">
+                  {/* 第四轮分支 - 恢复颜色 */}
+                  <div className="flex justify-center gap-8 md:gap-32 mb-12 md:mb-16">
                     {/* 1-2战绩 - BO3 */}
                     <div className="flex flex-col items-center">
-                      <div className="bg-red-50 px-6 py-4 rounded-lg border-2 border-red-500 w-60">
-                        <div className="font-bold text-base mb-2 text-center text-gray-800">第四轮 1-2</div>
-                        <div className="text-xs text-center text-red-600 mb-3">BO3</div>
-                        <div className="space-y-3 flex flex-col items-center">
+                      <div className="bg-red-50 px-3 md:px-6 py-3 md:py-4 rounded-lg border-2 border-red-500 w-48 md:w-80">
+                        <div className="font-bold text-sm md:text-base mb-1 md:mb-2 text-center text-gray-800">第四轮 1-2</div>
+                        <div className="text-xs text-center text-red-600 mb-2 md:mb-3">BO3</div>
+                        <div className="space-y-2 md:space-y-3 flex flex-col items-center">
                           {results.swissMatches[3]?.matches
                             .filter(m => m.team1RecordBefore === '1-2')
                             .map((match, idx) => (
-                              <div key={idx} className="bg-white px-6 py-2 rounded border border-red-300 w-54">
-                                <div className="grid grid-cols-3 items-center gap-2">
-                                  <div className="text-xs text-right">{teamsData[match.team1]?.name}</div>
+                              <div key={idx} className="bg-white px-4 md:px-6 py-2 rounded border border-red-300 w-44 md:w-72">
+                                <div className="grid grid-cols-3 items-center gap-1 md:gap-2">
+                                  <div className="text-xs text-right"><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
                                   <div className="text-sm font-bold text-center text-red-600">{match.score1}-{match.score2}</div>
-                                  <div className="text-xs text-left">{teamsData[match.team2]?.name}</div>
+                                  <div className="text-xs text-left"><span className="hidden sm:inline">{teamsData[match.team2]?.name}</span><span className="sm:hidden">{match.team2}</span></div>
                                 </div>
                               </div>
                             ))}
@@ -1006,16 +1027,21 @@ const Worlds2025Simulator = () => {
                       </div>
                       {/* 淘汰队伍 - 合并为一个BOX */}
                       {results.swissMatches[3]?.matches.filter(m => m.team1RecordBefore === '1-2').length > 0 && (
-                        <div className="mt-3 bg-red-500 text-white px-4 py-3 rounded-lg border-2 border-red-600 w-54">
-                          <div className="text-xs font-bold text-center mb-2">淘汰队伍</div>
+                        <div className="mt-2 md:mt-3 bg-red-500 text-white px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-red-600 w-44 md:w-72">
+                          <div className="text-xs font-bold text-center mb-1 md:mb-2">淘汰队伍</div>
                           <div className="text-xs text-center">
                             {results.swissMatches[3]?.matches
                               .filter(m => m.team1RecordBefore === '1-2')
-                              .map((match) => {
+                              .map((match, idx) => {
                                 const loser = match.winner === match.team1 ? match.team2 : match.team1;
-                                return teamsData[loser]?.name;
+                                return (
+                                  <React.Fragment key={idx}>
+                                    <span className="hidden sm:inline">{teamsData[loser]?.name}</span>
+                                    <span className="sm:hidden">{loser}</span>
+                                  </React.Fragment>
+                                );
                               })
-                              .join(' · ')}
+                              .reduce((prev, curr, idx) => idx === 0 ? [curr] : [...prev, ' · ', curr], [])}
                           </div>
                         </div>
                       )}
@@ -1023,18 +1049,18 @@ const Worlds2025Simulator = () => {
                     
                     {/* 2-1战绩 - BO3 */}
                     <div className="flex flex-col items-center">
-                      <div className="bg-blue-100 px-6 py-4 rounded-lg border-2 border-blue-600 w-60">
-                        <div className="font-bold text-base mb-2 text-center text-gray-800">第四轮 2-1</div>
-                        <div className="text-xs text-center text-blue-600 mb-3">BO3</div>
-                        <div className="space-y-3 flex flex-col items-center">
+                      <div className="bg-blue-100 px-3 md:px-6 py-3 md:py-4 rounded-lg border-2 border-blue-600 w-48 md:w-80">
+                        <div className="font-bold text-sm md:text-base mb-1 md:mb-2 text-center text-gray-800">第四轮 2-1</div>
+                        <div className="text-xs text-center text-blue-600 mb-2 md:mb-3">BO3</div>
+                        <div className="space-y-2 md:space-y-3 flex flex-col items-center">
                           {results.swissMatches[3]?.matches
                             .filter(m => m.team1RecordBefore === '2-1')
                             .map((match, idx) => (
-                              <div key={idx} className="bg-white px-6 py-2 rounded border border-blue-400 w-54">
-                                <div className="grid grid-cols-3 items-center gap-2">
-                                  <div className="text-xs text-right">{teamsData[match.team1]?.name}</div>
+                              <div key={idx} className="bg-white px-4 md:px-6 py-2 rounded border border-blue-400 w-44 md:w-72">
+                                <div className="grid grid-cols-3 items-center gap-1 md:gap-2">
+                                  <div className="text-xs text-right"><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
                                   <div className="text-sm font-bold text-center text-blue-600">{match.score1}-{match.score2}</div>
-                                  <div className="text-xs text-left">{teamsData[match.team2]?.name}</div>
+                                  <div className="text-xs text-left"><span className="hidden sm:inline">{teamsData[match.team2]?.name}</span><span className="sm:hidden">{match.team2}</span></div>
                                 </div>
                               </div>
                             ))}
@@ -1042,52 +1068,67 @@ const Worlds2025Simulator = () => {
                       </div>
                       {/* 晋级队伍 - 合并为一个BOX */}
                       {results.swissMatches[3]?.matches.filter(m => m.team1RecordBefore === '2-1').length > 0 && (
-                        <div className="mt-3 bg-green-600 text-white px-4 py-3 rounded-lg border-2 border-green-700 w-54">
-                          <div className="text-xs font-bold text-center mb-2">晋级队伍</div>
+                        <div className="mt-2 md:mt-3 bg-green-600 text-white px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-green-700 w-44 md:w-72">
+                          <div className="text-xs font-bold text-center mb-1 md:mb-2">晋级队伍</div>
                           <div className="text-xs text-center">
                             {results.swissMatches[3]?.matches
                               .filter(m => m.team1RecordBefore === '2-1')
-                              .map((match) => teamsData[match.winner]?.name)
-                              .join(' · ')}
+                              .map((match, idx) => (
+                                <React.Fragment key={idx}>
+                                  <span className="hidden sm:inline">{teamsData[match.winner]?.name}</span>
+                                  <span className="sm:hidden">{match.winner}</span>
+                                </React.Fragment>
+                              ))
+                              .reduce((prev, curr, idx) => idx === 0 ? [curr] : [...prev, ' · ', curr], [])}
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
                   
-                  {/* 第五轮：2-2 */}
+                  {/* 第五轮：2-2 - 恢复紫色配色 */}
                   {results.swissMatches[4] && results.swissMatches[4].matches.length > 0 && (
-                    <div className="flex flex-col items-center mb-16">
-                      <div className="bg-purple-100 px-8 py-5 rounded-lg border-2 border-purple-500 w-60">
-                        <div className="font-bold text-lg mb-2 text-center text-gray-800">第五轮 2-2</div>
-                        <div className="text-xs text-center text-purple-600 mb-3">BO3</div>
-                        <div className="space-y-3 flex flex-col items-center">
+                    <div className="flex flex-col items-center mb-12 md:mb-16">
+                      <div className="bg-purple-100 px-6 md:px-8 py-4 md:py-5 rounded-lg border-2 border-purple-500 w-48 md:w-80">
+                        <div className="font-bold text-base md:text-lg mb-1 md:mb-2 text-center text-gray-800">第五轮 2-2</div>
+                        <div className="text-xs text-center text-purple-600 mb-2 md:mb-3">BO3</div>
+                        <div className="space-y-2 md:space-y-3 flex flex-col items-center">
                           {results.swissMatches[4].matches.map((match, idx) => (
-                            <div key={idx} className="bg-white px-8 py-2 rounded border border-purple-400 w-54">
-                              <div className="grid grid-cols-3 items-center gap-2">
-                                <div className="text-xs text-right">{teamsData[match.team1]?.name}</div>
+                            <div key={idx} className="bg-white px-6 md:px-8 py-2 rounded border border-purple-400 w-44 md:w-72">
+                              <div className="grid grid-cols-3 items-center gap-1 md:gap-2">
+                                <div className="text-xs text-right"><span className="hidden sm:inline">{teamsData[match.team1]?.name}</span><span className="sm:hidden">{match.team1}</span></div>
                                 <div className="text-sm font-bold text-center text-purple-600">{match.score1}-{match.score2}</div>
-                                <div className="text-xs text-left">{teamsData[match.team2]?.name}</div>
+                                <div className="text-xs text-left"><span className="hidden sm:inline">{teamsData[match.team2]?.name}</span><span className="sm:hidden">{match.team2}</span></div>
                               </div>
                             </div>
                           ))}
                         </div>
                       </div>
                       {/* 晋级和淘汰队伍 - 合并为两个BOX */}
-                      <div className="mt-3 flex gap-4 justify-center">
-                        <div className="bg-red-500 text-white px-4 py-3 rounded-lg border-2 border-red-600 w-54">
-                          <div className="text-xs font-bold text-center mb-2">淘汰队伍</div>
+                      <div className="mt-2 md:mt-3 flex gap-2 md:gap-4 justify-center">
+                        <div className="bg-red-500 text-white px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-red-600 w-44 md:w-72">
+                          <div className="text-xs font-bold text-center mb-1 md:mb-2">淘汰队伍</div>
                           <div className="text-xs text-center">
-                            {results.swissMatches[4].matches.map((match) => {
+                            {results.swissMatches[4].matches.map((match, idx) => {
                               const loser = match.winner === match.team1 ? match.team2 : match.team1;
-                              return teamsData[loser]?.name;
-                            }).join(' · ')}
+                              return (
+                                <React.Fragment key={idx}>
+                                  <span className="hidden sm:inline">{teamsData[loser]?.name}</span>
+                                  <span className="sm:hidden">{loser}</span>
+                                </React.Fragment>
+                              );
+                            }).reduce((prev, curr, idx) => idx === 0 ? [curr] : [...prev, ' · ', curr], [])}
                           </div>
                         </div>
-                        <div className="bg-green-600 text-white px-4 py-3 rounded-lg border-2 border-green-700 w-54">
-                          <div className="text-xs font-bold text-center mb-2">晋级队伍</div>
+                        <div className="bg-green-600 text-white px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-green-700 w-44 md:w-72">
+                          <div className="text-xs font-bold text-center mb-1 md:mb-2">晋级队伍</div>
                           <div className="text-xs text-center">
-                            {results.swissMatches[4].matches.map((match) => teamsData[match.winner]?.name).join(' · ')}
+                            {results.swissMatches[4].matches.map((match, idx) => (
+                              <React.Fragment key={idx}>
+                                <span className="hidden sm:inline">{teamsData[match.winner]?.name}</span>
+                                <span className="sm:hidden">{match.winner}</span>
+                              </React.Fragment>
+                            )).reduce((prev, curr, idx) => idx === 0 ? [curr] : [...prev, ' · ', curr], [])}
                           </div>
                         </div>
                       </div>
@@ -1106,9 +1147,9 @@ const Worlds2025Simulator = () => {
             </p>
 
             <div className="overflow-x-auto">
-              <div className="min-w-[700px] md:min-w-[1200px] flex items-center justify-center gap-2 md:gap-4">
+              <div className="min-w-[700px] md:min-w-[1080px] flex items-center justify-center gap-2 md:gap-2">
                 {/* 左侧：上半区八强赛 */}
-                <div className="w-24 md:w-48 space-y-6 md:space-y-12">
+                <div className="w-32 md:w-48 space-y-6 md:space-y-12">
                   <div className="text-center font-bold text-xs md:text-sm text-blue-700 mb-2 md:mb-4 bg-blue-100 py-1 md:py-2 rounded">
                     上半区
                   </div>
@@ -1140,16 +1181,16 @@ const Worlds2025Simulator = () => {
                 </div>
 
                 {/* 左中：上半区半决赛 */}
-                <div className="w-56 flex items-center">
+                <div className="w-40 md:w-44 flex items-center">
                   <div className="w-full">
-                    <div className="text-center font-bold text-sm text-blue-700 mb-4 bg-blue-200 py-2 rounded">
+                    <div className="text-center font-bold text-xs md:text-sm text-blue-700 mb-2 md:mb-4 bg-blue-200 py-1 md:py-2 rounded">
                       上半区 - 半决赛
                     </div>
-                    <div className="bg-gradient-to-r from-blue-100 to-blue-200 p-4 rounded-lg border-2 border-blue-400 shadow-lg">
-                      <div className="text-xs text-center text-gray-700 mb-2 font-semibold">
+                    <div className="bg-gradient-to-r from-blue-100 to-blue-200 p-3 md:p-4 rounded-lg border-2 border-blue-400 shadow-lg">
+                      <div className="text-xs text-center text-gray-700 mb-1 md:mb-2 font-semibold">
                         G5
                       </div>
-                      <div className="text-center text-sm text-gray-600 py-4">
+                      <div className="text-center text-xs md:text-sm text-gray-600 py-2 md:py-4">
                         G1 胜者<br/>vs<br/>G2 胜者
                       </div>
                     </div>
@@ -1157,30 +1198,30 @@ const Worlds2025Simulator = () => {
                 </div>
 
                 {/* 正中：决赛 */}
-                <div className="w-64 flex items-center justify-center">
-                  <div className="bg-gradient-to-br from-yellow-100 via-yellow-200 to-orange-200 p-6 rounded-2xl border-4 border-yellow-500 shadow-2xl">
-                    <div className="text-center mb-4">
-                      <Trophy className="w-10 h-10 mx-auto text-yellow-700 mb-2" />
-                      <div className="font-bold text-xl text-gray-800">G7 - 总决赛</div>
+                <div className="w-48 md:w-64 flex items-center justify-center">
+                  <div className="bg-gradient-to-br from-yellow-100 via-yellow-200 to-orange-200 p-4 md:p-6 rounded-2xl border-4 border-yellow-500 shadow-2xl">
+                    <div className="text-center mb-2 md:mb-4">
+                      <Trophy className="w-8 h-8 md:w-10 md:h-10 mx-auto text-yellow-700 mb-2" />
+                      <div className="font-bold text-base md:text-xl text-gray-800">G7 - 总决赛</div>
                       <div className="text-xs text-gray-600 mt-1">11月9日 · 成都</div>
                     </div>
-                    <div className="text-center text-sm text-gray-600 py-4">
+                    <div className="text-center text-xs md:text-sm text-gray-600 py-2 md:py-4">
                       G5 胜者<br/>vs<br/>G6 胜者
                     </div>
                   </div>
                 </div>
 
                 {/* 右中：下半区半决赛 */}
-                <div className="w-56 flex items-center">
+                <div className="w-40 md:w-44 flex items-center">
                   <div className="w-full">
-                    <div className="text-center font-bold text-sm text-red-700 mb-4 bg-red-200 py-2 rounded">
+                    <div className="text-center font-bold text-xs md:text-sm text-red-700 mb-2 md:mb-4 bg-red-200 py-1 md:py-2 rounded">
                       下半区 - 半决赛
                     </div>
-                    <div className="bg-gradient-to-r from-red-100 to-red-200 p-4 rounded-lg border-2 border-red-400 shadow-lg">
-                      <div className="text-xs text-center text-gray-700 mb-2 font-semibold">
+                    <div className="bg-gradient-to-r from-red-100 to-red-200 p-3 md:p-4 rounded-lg border-2 border-red-400 shadow-lg">
+                      <div className="text-xs text-center text-gray-700 mb-1 md:mb-2 font-semibold">
                         G6
                       </div>
-                      <div className="text-center text-sm text-gray-600 py-4">
+                      <div className="text-center text-xs md:text-sm text-gray-600 py-2 md:py-4">
                         G3 胜者<br/>vs<br/>G4 胜者
                       </div>
                     </div>
@@ -1188,12 +1229,12 @@ const Worlds2025Simulator = () => {
                 </div>
 
                 {/* 右侧：下半区八强赛 */}
-                <div className="w-48 space-y-12">
-                  <div className="text-center font-bold text-sm text-red-700 mb-4 bg-red-100 py-2 rounded">
-                    下半区 - 四分之一决赛
+                <div className="w-32 md:w-48 space-y-6 md:space-y-12">
+                  <div className="text-center font-bold text-xs md:text-sm text-red-700 mb-2 md:mb-4 bg-red-100 py-1 md:py-2 rounded">
+                    下半区
                   </div>
-                  <div className="bg-red-50 p-3 rounded-lg border-2 border-red-300 shadow-md">
-                    <div className="text-xs text-center text-gray-600 mb-2 font-semibold">
+                  <div className="bg-red-50 p-2 md:p-3 rounded-lg border-2 border-red-300 shadow-md">
+                    <div className="text-xs text-center text-gray-600 mb-1 md:mb-2 font-semibold">
                       G3
                     </div>
                     <div className="flex justify-between items-center mb-1">
@@ -1205,8 +1246,8 @@ const Worlds2025Simulator = () => {
                     </div>
                   </div>
                   
-                  <div className="bg-red-50 p-3 rounded-lg border-2 border-red-300 shadow-md">
-                    <div className="text-xs text-center text-gray-600 mb-2 font-semibold">
+                  <div className="bg-red-50 p-2 md:p-3 rounded-lg border-2 border-red-300 shadow-md">
+                    <div className="text-xs text-center text-gray-600 mb-1 md:mb-2 font-semibold">
                       G4
                     </div>
                     <div className="flex justify-between items-center mb-1">
@@ -1223,9 +1264,9 @@ const Worlds2025Simulator = () => {
           </section>
 
           {/* 八强赛赛果模拟 */}
-          <section className="bg-white rounded-xl shadow-lg p-6 border-2 border-orange-200">
-            <h2 className="text-2xl font-bold mb-4 text-orange-700">🏆 八强赛赛果模拟</h2>
-            <p className="text-sm text-gray-600 mb-4">
+          <section className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-2 border-orange-200">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 text-orange-700">🏆 八强赛赛果模拟</h2>
+            <p className="text-xs sm:text-sm text-gray-600 mb-4">
               BO5 - 上海梅赛德斯-奔驰文化中心
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1241,9 +1282,9 @@ const Worlds2025Simulator = () => {
           </section>
 
           {/* 半决赛赛果模拟 */}
-          <section className="bg-white rounded-xl shadow-lg p-6 border-2 border-red-200">
-            <h2 className="text-2xl font-bold mb-4 text-red-700">🔥 半决赛赛果模拟</h2>
-            <p className="text-sm text-gray-600 mb-4">
+          <section className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-2 border-red-200">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 text-red-700">🔥 半决赛赛果模拟</h2>
+            <p className="text-xs sm:text-sm text-gray-600 mb-4">
               BO5 - 上海梅赛德斯-奔驰文化中心
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1257,24 +1298,24 @@ const Worlds2025Simulator = () => {
           </section>
 
           {/* 总决赛赛果模拟 */}
-          <section className="bg-gradient-to-br from-yellow-100 via-yellow-200 to-orange-200 rounded-xl shadow-2xl p-8 border-4 border-yellow-400">
-            <h2 className="text-3xl font-bold mb-4 text-center flex items-center justify-center gap-3">
-              <Trophy className="w-10 h-10 text-yellow-700" />
+          <section className="bg-gradient-to-br from-yellow-100 via-yellow-200 to-orange-200 rounded-xl shadow-2xl p-6 sm:p-8 border-4 border-yellow-400">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-center flex items-center justify-center gap-3">
+              <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-700" />
               总决赛赛果模拟
             </h2>
-            <p className="text-sm text-gray-800 mb-6 text-center font-semibold">
+            <p className="text-xs sm:text-sm text-gray-800 mb-6 text-center font-semibold">
               BO5 - 成都东安湖体育公园多功能体育馆
             </p>
             <BO5Display match={results.final} />
             
-            <div className="mt-8 text-center">
-              <div className="inline-block bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-10 py-6 rounded-2xl shadow-2xl border-4 border-yellow-300">
-                <Trophy className="w-16 h-16 mx-auto mb-3 animate-pulse" />
-                <div className="text-xl font-bold mb-2">🏆 2025 全球总决赛冠军 🏆</div>
-                <div className="text-5xl font-black mb-2">
+            <div className="mt-6 sm:mt-8 text-center">
+              <div className="inline-block bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-8 sm:px-10 py-4 sm:py-6 rounded-2xl shadow-2xl border-4 border-yellow-300">
+                <Trophy className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 animate-pulse" />
+                <div className="text-lg sm:text-xl font-bold mb-2">🏆 2025 全球总决赛冠军 🏆</div>
+                <div className="text-3xl sm:text-5xl font-black mb-2">
                   {teamsData[results.champion].name}
                 </div>
-                <div className="text-lg mt-2 opacity-95 bg-white/20 px-4 py-1 rounded-full inline-block">
+                <div className="text-base sm:text-lg mt-2 opacity-95 bg-white/20 px-4 py-1 rounded-full inline-block">
                   {teamsData[results.champion].region} 赛区
                 </div>
               </div>
@@ -1282,14 +1323,14 @@ const Worlds2025Simulator = () => {
           </section>
 
           {/* 淘汰赛赛果总结表（对称布局，决赛居中） */}
-          <section className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-8 border-2 border-purple-300">
-            <h2 className="text-3xl font-bold mb-6 text-purple-800 text-center">
+          <section className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-4 sm:p-8 border-2 border-purple-300">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-purple-800 text-center">
               🏆 淘汰赛完整赛果图
             </h2>
 
             {/* 桌面端：横向布局 */}
             <div className="hidden md:block overflow-x-auto">
-              <div className="min-w-[1200px] flex items-center justify-center gap-4">
+              <div className="min-w-[1080px] flex items-center justify-center gap-2">
                 {/* 左侧：上半区八强赛 */}
                 <div className="w-48 space-y-12">
                   <div className="text-center font-bold text-sm text-blue-700 mb-4 bg-blue-100 py-2 rounded">
@@ -1313,7 +1354,7 @@ const Worlds2025Simulator = () => {
                 </div>
 
                 {/* 左中：上半区半决赛 */}
-                <div className="w-56 flex items-center">
+                <div className="w-44 flex items-center">
                   <div className="w-full">
                     <div className="text-center font-bold text-sm text-blue-700 mb-4 bg-blue-200 py-2 rounded">
                       上半区 - 半决赛
@@ -1358,7 +1399,7 @@ const Worlds2025Simulator = () => {
                 </div>
 
                 {/* 右中：下半区半决赛 */}
-                <div className="w-56 flex items-center">
+                <div className="w-44 flex items-center">
                   <div className="w-full">
                     <div className="text-center font-bold text-sm text-red-700 mb-4 bg-red-200 py-2 rounded">
                       下半区 - 半决赛
@@ -1411,17 +1452,17 @@ const Worlds2025Simulator = () => {
                 <div className="space-y-3">
                   <div className="bg-blue-50 p-3 rounded-lg border-2 border-blue-300">
                     <div className="text-xs text-center text-gray-600 mb-2 font-semibold">上半区</div>
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-2">
                       {results.quarters.slice(0, 2).map((match, idx) => (
                         <div key={idx} className="bg-white p-2 rounded border border-blue-200">
                           <div className="text-xs text-center text-gray-600 mb-1">G{idx + 1}</div>
-                          <div className={`flex justify-between items-center ${match.winner === match.team1 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
+                          <div className={`flex justify-between items-center text-xs ${match.winner === match.team1 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
                             <TeamDisplay code={match.team1} />
-                            <span className="text-lg">{match.score1}</span>
+                            <span className="text-base">{match.score1}</span>
                           </div>
-                          <div className={`flex justify-between items-center ${match.winner === match.team2 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
+                          <div className={`flex justify-between items-center text-xs ${match.winner === match.team2 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
                             <TeamDisplay code={match.team2} />
-                            <span className="text-lg">{match.score2}</span>
+                            <span className="text-base">{match.score2}</span>
                           </div>
                         </div>
                       ))}
@@ -1430,17 +1471,17 @@ const Worlds2025Simulator = () => {
                   
                   <div className="bg-red-50 p-3 rounded-lg border-2 border-red-300">
                     <div className="text-xs text-center text-gray-600 mb-2 font-semibold">下半区</div>
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-2">
                       {results.quarters.slice(2, 4).map((match, idx) => (
                         <div key={idx} className="bg-white p-2 rounded border border-red-200">
                           <div className="text-xs text-center text-gray-600 mb-1">G{idx + 3}</div>
-                          <div className={`flex justify-between items-center ${match.winner === match.team1 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
+                          <div className={`flex justify-between items-center text-xs ${match.winner === match.team1 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
                             <TeamDisplay code={match.team1} />
-                            <span className="text-lg">{match.score1}</span>
+                            <span className="text-base">{match.score1}</span>
                           </div>
-                          <div className={`flex justify-between items-center ${match.winner === match.team2 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
+                          <div className={`flex justify-between items-center text-xs ${match.winner === match.team2 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
                             <TeamDisplay code={match.team2} />
-                            <span className="text-lg">{match.score2}</span>
+                            <span className="text-base">{match.score2}</span>
                           </div>
                         </div>
                       ))}
@@ -1452,17 +1493,17 @@ const Worlds2025Simulator = () => {
               {/* 半决赛赛果 */}
               <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border-2 border-purple-400">
                 <h3 className="font-bold text-center text-purple-700 mb-3 text-lg">半决赛赛果</h3>
-                <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
                   {results.semis.map((match, idx) => (
                     <div key={idx} className="bg-white p-3 rounded-lg border-2 border-purple-300">
                       <div className="text-xs text-center text-gray-600 mb-2">G{idx + 5}</div>
-                      <div className={`flex justify-between items-center mb-1 ${match.winner === match.team1 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
+                      <div className={`flex justify-between items-center mb-1 text-xs ${match.winner === match.team1 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
                         <TeamDisplay code={match.team1} />
-                        <span className="text-xl">{match.score1}</span>
+                        <span className="text-lg">{match.score1}</span>
                       </div>
-                      <div className={`flex justify-between items-center ${match.winner === match.team2 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
+                      <div className={`flex justify-between items-center text-xs ${match.winner === match.team2 ? 'font-bold text-green-600' : 'text-gray-500'}`}>
                         <TeamDisplay code={match.team2} />
-                        <span className="text-xl">{match.score2}</span>
+                        <span className="text-lg">{match.score2}</span>
                       </div>
                     </div>
                   ))}
@@ -1492,10 +1533,10 @@ const Worlds2025Simulator = () => {
           </section>
 
           {/* 战力参考 */}
-          <section className="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-300">
-            <h2 className="text-xl font-bold mb-4">📊 强度参考</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              模拟基于赔率。在赔率区间（灰色字体）随机选择，然后计算归一化赔率（蓝色字体）。
+          <section className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-2 border-gray-300">
+            <h2 className="text-lg sm:text-xl font-bold mb-4">📊 强度参考</h2>
+            <p className="text-xs sm:text-sm text-gray-600 mb-4">
+              模拟基于赔率。在赔率区间（灰色字体）随机选择,然后计算归一化赔率（蓝色字体）。
             </p>
             
             {/* 可折叠的数据详情 */}
@@ -1504,12 +1545,12 @@ const Worlds2025Simulator = () => {
                 🔍 展开查看详细数据
               </summary>
               
-              {/* 3列6行布局 */}
-              <div className="grid grid-cols-3 gap-4">
+              {/* 2列布局：移动端2列，平板3列，桌面3列 */}
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.keys(teamsData).sort((a, b) => results.strengths[b] - results.strengths[a]).map((code, idx) => (
                   <div key={code} className={`p-4 rounded-lg border-2 ${idx < 3 ? 'bg-yellow-50 border-yellow-400' : 'bg-gray-50 border-gray-300'}`}>
                     {/* 战队名称 - 最大字体 */}
-                    <div className="text-lg font-bold text-gray-800 mb-1">
+                    <div className="text-base sm:text-lg font-bold text-gray-800 mb-1">
                       {teamsData[code].name}
                     </div>
                     
@@ -1519,7 +1560,7 @@ const Worlds2025Simulator = () => {
                     </div>
                     
                     {/* 归一化赔率 - 中等字体，蓝色 */}
-                    <div className="text-base font-semibold text-blue-600 mb-2">
+                    <div className="text-sm sm:text-base font-semibold text-blue-600 mb-2">
                       {results.normalizedOdds[code].toFixed(2)}
                     </div>
                     
